@@ -1,13 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { useAuth } from './Auth';
 
-export default function Admin({ products, setProducts }) {
+export default function Admin({ products, setProducts, categories, setCategories }) {
   const { admin, login, logout } = useAuth();
-  const [form, setForm] = useState({ name: '', price: '', category: 'Assises', description: '', image: null });
+  const [form, setForm] = useState({ name: '', price: '', category: categories[0], description: '', image: null });
   const [isDragging, setIsDragging] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedProduct, setEditedProduct] = useState(null);
   const fileInputRef = useRef(null);
+  const [newCategory, setNewCategory] = useState('');
 
   const handleFile = (file) => {
     if (file && file.type.startsWith('image/')) {
@@ -36,7 +37,7 @@ export default function Admin({ products, setProducts }) {
   const cancelEdit = () => {
     setEditMode(false);
     setEditedProduct(null);
-    setForm({ name: '', price: '', category: 'Assises', description: '', image: null });
+    setForm({ name: '', price: '', category: categories[0], description: '', image: null });
   };
 
   const saveProduct = () => {
@@ -45,7 +46,22 @@ export default function Admin({ products, setProducts }) {
       cancelEdit();
     } else {
       setProducts([...products, { ...form, id: Date.now().toString() }]);
-      setForm({ name: '', price: '', category: 'Assises', description: '', image: null });
+      setForm({ name: '', price: '', category: categories[0], description: '', image: null });
+    }
+  };
+
+  const handleDeleteCategory = (category) => {
+    if (products.some(p => p.category === category)) {
+      alert(`Impossible de supprimer la catégorie ${category} car elle est encore utilisée par des produits.`);
+    } else {
+      setCategories(categories.filter(c => c !== category));
+    }
+  };
+
+  const handleAddCategory = () => {
+    if (!categories.includes(newCategory) && newCategory !== '') {
+      setCategories([...categories, newCategory]);
+      setNewCategory('');
     }
   };
 
@@ -65,7 +81,7 @@ export default function Admin({ products, setProducts }) {
           <input className="border p-2 rounded" placeholder="Prix (FCFA)" type="number" value={form.price} onChange={e=>setForm({...form, price: Number(e.target.value)})}/>
           <input className="border p-2 rounded" placeholder="Description" value={form.description} onChange={e=>setForm({...form, description: e.target.value})}/>
           <select className="border p-2 rounded" value={form.category} onChange={e=>setForm({...form, category: e.target.value})}>
-            <option>Assises</option><option>Tables</option><option>Éclairage</option>
+            {categories.map(category => <option key={category}>{category}</option>)}
           </select>
           
           <div 
@@ -108,6 +124,22 @@ export default function Admin({ products, setProducts }) {
           </div>
         ))}
       </div>
+
+      <section className="surface p-6 mt-10">
+        <h2 className="text-lg font-bold mb-4">Catégories</h2>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {categories.map(category => (
+            <div key={category} className="flex items-center gap-2 surface p-2 rounded">
+              <span>{category}</span>
+              <button onClick={() => handleDeleteCategory(category)} className="p-2 text-red-400 hover:text-red-600"><i className="fi fi-rr-trash" style={{fontSize: 16}}></i></button>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <input className="border p-2 rounded" placeholder="Nouvelle catégorie" value={newCategory} onChange={e => setNewCategory(e.target.value)} />
+          <button onClick={handleAddCategory} className="button-primary"><i className="fi fi-rr-plus" style={{fontSize: 16}}></i> Ajouter</button>
+        </div>
+      </section>
     </main>
   );
 }

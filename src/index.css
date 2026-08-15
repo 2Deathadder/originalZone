@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { color-scheme: light; }
+  .dark { color-scheme: dark; }
+  body { @apply bg-paper text-ink antialiased dark:bg-zinc-950 dark:text-stone-100; }
+  button, a, input, select { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950; }
+}
+@layer components {
+  .shell { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
+  .button-primary { @apply inline-flex min-h-11 items-center justify-center rounded-full bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark dark:bg-sage dark:hover:bg-sage-dark; }
+  .button-secondary { @apply inline-flex min-h-11 items-center justify-center rounded-full border border-stone-300 px-5 text-sm font-semibold text-ink transition hover:border-sage hover:text-sage dark:border-zinc-700 dark:text-stone-100 dark:hover:border-sage dark:hover:text-sage; }
+  .surface { @apply rounded-2xl border border-stone-200 bg-white dark:border-zinc-800 dark:bg-zinc-900; }
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-sage; }
+}

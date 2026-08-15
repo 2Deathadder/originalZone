@@ -38,4 +38,3 @@ function Footer(){return <footer className="border-t border-stone-200 py-10 dark
 function AdminRoute() { const { products, setProducts } = useContext(CartContext); return <Admin products={products} setProducts={setProducts}/> }
 function App(){return <AuthProvider><CartProvider><Header/><Routes><Route path="/" element={<Home/>}/><Route path="/catalogue" element={<Catalogue/>}/><Route path="/produit/:id" element={<ProductPage/>}/><Route path="/panier" element={<Cart/>}/><Route path="/checkout" element={<Checkout/>}/><Route path="/compte" element={<Account/>}/><Route path="/admin" element={<AdminRoute/>}/></Routes><Footer/></CartProvider></AuthProvider>}
 createRoot(document.getElementById('root')).render(<BrowserRouter><App/></BrowserRouter>)
-}

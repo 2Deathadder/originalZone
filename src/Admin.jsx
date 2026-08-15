@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { useAuth } from './Auth';
-import { Pencil, Trash, PackagePlus, UploadCloud, X } from 'lucide-react';
 
 export default function Admin({ products, setProducts }) {
   const { admin, login, logout } = useAuth();
@@ -35,7 +34,7 @@ export default function Admin({ products, setProducts }) {
       
       <section className="surface p-6 mb-10">
         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-          <PackagePlus size={20} /> Ajouter un produit
+          <i className="fi fi-rr-box-open" style={{fontSize: 20}}></i> Ajouter un produit
         </h2>
         <div className="grid md:grid-cols-2 gap-4">
           <input className="border p-2 rounded" placeholder="Nom" onChange={e=>setForm({...form, name: e.target.value})}/>
@@ -56,18 +55,18 @@ export default function Admin({ products, setProducts }) {
             {form.image ? (
               <div className="relative inline-block">
                 <img src={form.image} alt="Preview" className="h-32 rounded" />
-                <button className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1" onClick={(e) => {e.stopPropagation(); setForm({...form, image: null})}}><X size={12}/></button>
+                <button className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1" onClick={(e) => {e.stopPropagation(); setForm({...form, image: null})}}><i className="fi fi-rr-cross" style={{fontSize: 12}}></i></button>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-2 text-stone-500">
-                <UploadCloud size={32} />
+                <i className="fi fi-rr-cloud-upload" style={{fontSize: 32}}></i>
                 <p className="text-sm">Glissez une image ou cliquez pour sélectionner</p>
               </div>
             )}
           </div>
 
           <button className="button-primary md:col-span-2" onClick={() => setProducts([...products, {...form, id: Date.now().toString()}])}>
-            <PackagePlus size={18} className="mr-2"/> Ajouter le produit
+            <i className="fi fi-rr-box-open" style={{fontSize: 18}}></i> Ajouter le produit
           </button>
         </div>
       </section>
@@ -80,8 +79,8 @@ export default function Admin({ products, setProducts }) {
               <p className="text-sm text-sage">{p.price} FCFA</p>
             </div>
             <div className="flex gap-2">
-              <button className="p-2 hover:text-sage"><Pencil size={16}/></button>
-              <button onClick={() => setProducts(products.filter(x=>x.id!==p.id))} className="p-2 text-red-400 hover:text-red-600"><Trash size={16}/></button>
+              <button className="p-2 hover:text-sage"><i className="fi fi-rr-pencil" style={{fontSize: 16}}></i></button>
+              <button onClick={() => setProducts(products.filter(x=>x.id!==p.id))} className="p-2 text-red-400 hover:text-red-600"><i className="fi fi-rr-trash" style={{fontSize: 16}}></i></button>
             </div>
           </div>
         ))}

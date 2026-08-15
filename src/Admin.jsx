@@ -5,6 +5,8 @@ export default function Admin({ products, setProducts }) {
   const { admin, login, logout } = useAuth();
   const [form, setForm] = useState({ name: '', price: '', category: 'Assises', description: '', image: null });
   const [isDragging, setIsDragging] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedProduct, setEditedProduct] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleFile = (file) => {
@@ -25,6 +27,28 @@ export default function Admin({ products, setProducts }) {
     </main>
   );
 
+  const editProduct = (product) => {
+    setEditMode(true);
+    setEditedProduct(product);
+    setForm({ name: product.name, price: product.price, category: product.category, description: product.description, image: product.image });
+  };
+
+  const cancelEdit = () => {
+    setEditMode(false);
+    setEditedProduct(null);
+    setForm({ name: '', price: '', category: 'Assises', description: '', image: null });
+  };
+
+  const saveProduct = () => {
+    if (editMode) {
+      setProducts(products.map(p => p.id === editedProduct.id ? { ...form, id: editedProduct.id } : p));
+      cancelEdit();
+    } else {
+      setProducts([...products, { ...form, id: Date.now().toString() }]);
+      setForm({ name: '', price: '', category: 'Assises', description: '', image: null });
+    }
+  };
+
   return (
     <main className="shell py-10">
       <div className="flex justify-between items-center mb-10">
@@ -34,13 +58,13 @@ export default function Admin({ products, setProducts }) {
       
       <section className="surface p-6 mb-10">
         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-          <i className="fi fi-rr-box-open" style={{fontSize: 20}}></i> Ajouter un produit
+          <i className="fi fi-rr-box-open" style={{fontSize: 20}}></i> {editMode ? 'Éditer un produit' : 'Ajouter un produit'}
         </h2>
         <div className="grid md:grid-cols-2 gap-4">
-          <input className="border p-2 rounded" placeholder="Nom" onChange={e=>setForm({...form, name: e.target.value})}/>
-          <input className="border p-2 rounded" placeholder="Prix (FCFA)" type="number" onChange={e=>setForm({...form, price: Number(e.target.value)})}/>
-          <input className="border p-2 rounded" placeholder="Description" onChange={e=>setForm({...form, description: e.target.value})}/>
-          <select className="border p-2 rounded" onChange={e=>setForm({...form, category: e.target.value})}>
+          <input className="border p-2 rounded" placeholder="Nom" value={form.name} onChange={e=>setForm({...form, name: e.target.value})}/>
+          <input className="border p-2 rounded" placeholder="Prix (FCFA)" type="number" value={form.price} onChange={e=>setForm({...form, price: Number(e.target.value)})}/>
+          <input className="border p-2 rounded" placeholder="Description" value={form.description} onChange={e=>setForm({...form, description: e.target.value})}/>
+          <select className="border p-2 rounded" value={form.category} onChange={e=>setForm({...form, category: e.target.value})}>
             <option>Assises</option><option>Tables</option><option>Éclairage</option>
           </select>
           
@@ -65,9 +89,8 @@ export default function Admin({ products, setProducts }) {
             )}
           </div>
 
-          <button className="button-primary md:col-span-2" onClick={() => setProducts([...products, {...form, id: Date.now().toString()}])}>
-            <i className="fi fi-rr-box-open" style={{fontSize: 18}}></i> Ajouter le produit
-          </button>
+          <button className="button-primary md:col-span-2" onClick={saveProduct}>{editMode ? 'Enregistrer les modifications' : 'Ajouter le produit'}</button>
+          {editMode && <button className="button-secondary md:col-span-2" onClick={cancelEdit}>Annuler</button>}
         </div>
       </section>
 
@@ -79,7 +102,7 @@ export default function Admin({ products, setProducts }) {
               <p className="text-sm text-sage">{p.price} FCFA</p>
             </div>
             <div className="flex gap-2">
-              <button className="p-2 hover:text-sage"><i className="fi fi-rr-pencil" style={{fontSize: 16}}></i></button>
+              <button className="p-2 hover:text-sage" onClick={() => editProduct(p)}><i className="fi fi-rr-pencil" style={{fontSize: 16}}></i></button>
               <button onClick={() => setProducts(products.filter(x=>x.id!==p.id))} className="p-2 text-red-400 hover:text-red-600"><i className="fi fi-rr-trash" style={{fontSize: 16}}></i></button>
             </div>
           </div>
